@@ -3,7 +3,6 @@ $( document ).ready(function(){
     $('#search').click(function (){
       search()
     })
-
 });
 
 function appendResult(data){
@@ -18,32 +17,11 @@ function appendResult(data){
       results.push(artists[el])
     }
   }
-
-
-
-
   const bullet = results.map(function(artist){
     return `<li><a href="#" id="${artist.id}" class="artistName"> ${artist.name}</a></li>`
 })
-
     list.html(bullet.join(''))
     assignArtistHandler()
-}
-
-function appendAlbumResult(data){
-  const albums = data.items
-  const albumList = $('#album-list')
-  const albumBullet = albums.map(function(album){
-    return `<li><ul id=${album.id}><h1>${album.name}</h1></ul></li>`
-  })
-
-  const albumIds = albums.map(function (album){
-    var obj = {}
-    obj[album.id] = album.images[0].url
-    return obj
-  })
-  debugger
-  albumList.html(albumBullet.join(''))
 }
 
 function assignArtistHandler(){
@@ -60,8 +38,50 @@ function assignArtistHandler(){
 }
 
 
+function appendAlbumResult(data){
+  const albums = data.items
+  const albumList = $('#album-list')
+  let albumNames = []
+  let albumReturn = []
+
+  for (var el in albums){
+      if ( !albumNames.includes(albums[el].name)){
+          albumNames.push(albums[el].name)
+          albumReturn.push(albums[el])
+      }
+  }
+
+  const albumBullet = albumReturn.map(function(album){
+    return `<li><ul id=${album.id}><h1>${album.name}</h1></ul></li>`
+  })
+  let artistName = ''
+  const albumIds = albums.map(function (album){
+    artistName = album.artists[0].name
+
+    var idObj = {}
+    var urlObj = {}
+    idObj["id"] = album.id
+    urlObj["url"] = album.images[1].url
+    return {idObj, urlObj}
+  })
+  albumList.html(albumBullet.join(''))
+  $("#album-list").prepend(`<h1>${artistName}</h1>`)
+  //append images after titles load
+
+  for(var image in albumIds){
+      let id = $(`#${albumIds[image].idObj.id}`)
+      let url = `<img src=${albumIds[image].urlObj.url} class="coverArt">`
+          id.append(url)
+  }
+}
+
+
 function search() {
   let searchVal = $('.search-box').val()
+  if (searchVal.includes(" ")){
+    searchVal = searchVal.split(" ").join("%20")
+  }
+  // debugger
     $.ajax({
       url: "https://api.spotify.com/v1/search?q=" + `${searchVal}&type=artist`,
       dataType: 'json',
@@ -69,11 +89,10 @@ function search() {
         appendResult(data)
       }
     })
-
 }
 
 function searchAlbums() {
-  debugger
+  // debugger
 
 
 }
