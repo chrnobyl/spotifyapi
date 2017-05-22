@@ -6,6 +6,7 @@ $( document ).ready(function(){
 });
 
 function appendResult(data){
+    debugger
   const artists = data.artists.items
   const list = $('#result-list')
   const nameResults = []
@@ -51,6 +52,7 @@ function appendAlbumResult(data){
       }
   }
 
+
   const albumBullet = albumReturn.map(function(album){
     return `<li><ul id=${album.id}><h1>${album.name}</h1></ul></li>`
   })
@@ -81,7 +83,6 @@ function search() {
   if (searchVal.includes(" ")){
     searchVal = searchVal.split(" ").join("%20")
   }
-  // debugger
     $.ajax({
       url: "https://api.spotify.com/v1/search?q=" + `${searchVal}&type=artist`,
       dataType: 'json',
@@ -89,10 +90,4 @@ function search() {
         appendResult(data)
       }
     })
-}
-
-function searchAlbums() {
-  // debugger
-
-
 }
