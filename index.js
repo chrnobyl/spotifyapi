@@ -19,7 +19,7 @@ function appendResult(data){
     }
   }
 
-  
+
 
 
   const bullet = results.map(function(artist){
@@ -34,11 +34,16 @@ function appendAlbumResult(data){
   const albums = data.items
   const albumList = $('#album-list')
   const albumBullet = albums.map(function(album){
-    return `<li><h1>${album.name}</h1></li>`
+    return `<li><ul id=${album.id}><h1>${album.name}</h1></ul></li>`
   })
 
+  const albumIds = albums.map(function (album){
+    var obj = {}
+    obj[album.id] = album.images[0].url
+    return obj
+  })
+  debugger
   albumList.html(albumBullet.join(''))
-
 }
 
 function assignArtistHandler(){
